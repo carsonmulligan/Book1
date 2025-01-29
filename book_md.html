@@ -1,1 +1,154 @@
- 
+<!DOCTYPE html>
+<html lang="zh-en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塵土與星斗 - Dynamic Reader</title>
+    <style>
+        /* Previous styles from book.html remain unchanged */
+        :root {
+            --wenyanwen-color: #2d2d2d;
+            --english-color: #444444;
+            --commentary-bg: #f8f6f3;
+        }
+
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            line-height: 1.8;
+            font-family: 'PingFang SC', system-ui;
+        }
+
+        .chapter-title {
+            border-bottom: 2px solid #e0dcd5;
+            padding-bottom: 1rem;
+            margin: 3rem 0 2rem;
+        }
+
+        /* ... (keep all previous CSS rules) ... */
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin: 2rem 0;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet>
+</head>
+<body>
+    <div id="book-content"></div>
+    <div class="loading" id="loading">載入中... Loading...</div>
+
+    <script>
+        // Chapter loader with automatic sequence detection
+        class ChapterLoader {
+            constructor() {
+                this.chapterContainer = document.getElementById('book-content');
+                this.loadingIndicator = document.getElementById('loading');
+                this.currentChapter = 1;
+            }
+
+            async loadChapters() {
+                while(true) {
+                    const exists = await this.loadChapter(this.currentChapter);
+                    if(!exists) break;
+                    this.currentChapter++;
+                }
+                this.loadingIndicator.style.display = 'none';
+            }
+
+            async loadChapter(number) {
+                try {
+                    const response = await fetch(`chapter${number}.md`);
+                    if(!response.ok) return false;
+                    
+                    const mdContent = await response.text();
+                    this.renderChapter(mdContent, number);
+                    return true;
+                } catch (error) {
+                    console.error(`Error loading chapter ${number}:`, error);
+                    return false;
+                }
+            }
+
+            renderChapter(mdContent, chapterNumber) {
+                const parser = new MarkdownParser(mdContent);
+                const chapterHTML = parser.parse();
+                
+                const chapterDiv = document.createElement('div');
+                chapterDiv.innerHTML = chapterHTML;
+                this.chapterContainer.appendChild(chapterDiv);
+            }
+        }
+
+        // Markdown to HTML parser for our specific format
+        class MarkdownParser {
+            constructor(mdText) {
+                this.mdText = mdText;
+            }
+
+            parse() {
+                const sections = this.mdText.split('\n---\n');
+                let html = '';
+                
+                // Chapter title
+                const titleMatch = this.mdText.match(/# (.*?)\n## (.*?)\n/);
+                html += `<div class="chapter-title">
+                    <h1 class="wenyanwen">${titleMatch[1]}</h1>
+                    <h2 class="english">${titleMatch[2]}</h2>
+                </div>`;
+
+                sections.forEach(section => {
+                    if(section.includes('〖王梵志詩〗')) {
+                        html += this.parsePoemSection(section);
+                    } else if(section.includes('〖今評')) {
+                        html += this.parseCommentarySection(section);
+                    } else {
+                        html += this.parseTextSection(section);
+                    }
+                });
+
+                return html;
+            }
+
+            parsePoemSection(section) {
+                const [chinese, english] = section.split('**English**');
+                return `<div class="poem-block">
+                    <div class="wenyanwen">${this.cleanContent(chinese)}</div>
+                    <div class="english">${this.cleanContent(english)}</div>
+                </div>`;
+            }
+
+            parseCommentarySection(section) {
+                const [chinese, english] = section.split('**English Commentary**');
+                return `<div class="commentary">
+                    <div class="wenyanwen">${this.cleanContent(chinese)}</div>
+                    <div class="english">${this.cleanContent(english)}</div>
+                </div>`;
+            }
+
+            parseTextSection(section) {
+                const [chinese, english] = section.split('**English**');
+                return `<div class="text-block">
+                    <div class="wenyanwen">${this.cleanContent(chinese)}</div>
+                    <div class="english">${this.cleanContent(english)}</div>
+                </div>`;
+            }
+
+            cleanContent(text) {
+                return text.replace(/(\*\*|〖|〗)/g, '')
+                          .replace(/\n/g, '<br>')
+                          .trim();
+            }
+        }
+
+        // Initialize loader when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            const loader = new ChapterLoader();
+            loader.loadChapters();
+        });
+    </script>
+</body>
+</html> 
