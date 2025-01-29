@@ -42,51 +42,21 @@
     <div class="loading" id="loading">載入中... Loading...</div>
 
     <script>
-        // Chapter loader with automatic sequence detection
-        class ChapterLoader {
-            constructor() {
-                this.chapterContainer = document.getElementById('book-content');
-                this.loadingIndicator = document.getElementById('loading');
-                this.currentChapter = 1;
-            }
+        // Temporary test content
+        const testMD = `# 測試章節
+        ## Test Chapter
 
-            async loadChapters() {
-                while(true) {
-                    const exists = await this.loadChapter(this.currentChapter);
-                    if(!exists) break;
-                    this.currentChapter++;
-                }
-                this.loadingIndicator.style.display = 'none';
-            }
+        〖王梵志詩〗  
+        **Original:**
+        "測試詩歌"  
 
-            async loadChapter(number) {
-                try {
-                    const response = await fetch(`chapter${number}.md`);
-                    if(!response.ok) return false;
-                    
-                    const mdContent = await response.text();
-                    this.renderChapter(mdContent, number);
-                    return true;
-                } catch (error) {
-                    console.error(`Error loading chapter ${number}:`, error);
-                    return false;
-                }
-            }
+        **English**  
+        Test poetry`;
 
-            renderChapter(mdContent, chapterNumber) {
-                const parser = new MarkdownParser(mdContent);
-                const chapterHTML = parser.parse();
-                
-                const chapterDiv = document.createElement('div');
-                chapterDiv.innerHTML = chapterHTML;
-                this.chapterContainer.appendChild(chapterDiv);
-            }
-        }
-
-        // Markdown to HTML parser for our specific format
+        // Replace MarkdownParser class with this test version
         class MarkdownParser {
-            constructor(mdText) {
-                this.mdText = mdText;
+            constructor() {
+                this.mdText = testMD;
             }
 
             parse() {
@@ -141,6 +111,48 @@
                 return text.replace(/(\*\*|〖|〗)/g, '')
                           .replace(/\n/g, '<br>')
                           .trim();
+            }
+        }
+
+        // Modify ChapterLoader to use test content
+        class ChapterLoader {
+            constructor() {
+                this.chapterContainer = document.getElementById('book-content');
+                this.loadingIndicator = document.getElementById('loading');
+                this.currentChapter = 1;
+            }
+
+            async loadChapters() {
+                while(true) {
+                    const exists = await this.loadChapter(this.currentChapter);
+                    if(!exists) {
+                        console.log(`Stopped at chapter ${this.currentChapter}`);
+                        break;
+                    }
+                    this.currentChapter++;
+                }
+                this.loadingIndicator.style.display = 'none';
+            }
+
+            async loadChapter(chapterNumber) {
+                const response = await fetch(`./chapter${chapterNumber}.md`);
+                if (response.ok) {
+                    const chapterHTML = await response.text();
+                    this.renderChapter(chapterHTML, chapterNumber);
+                    return true;
+                } else {
+                    console.error(`Chapter ${chapterNumber} not found`);
+                    return false;
+                }
+            }
+
+            renderChapter(mdContent, chapterNumber) {
+                const parser = new MarkdownParser();
+                const chapterHTML = parser.parse();
+                
+                const chapterDiv = document.createElement('div');
+                chapterDiv.innerHTML = chapterHTML;
+                this.chapterContainer.appendChild(chapterDiv);
             }
         }
 
