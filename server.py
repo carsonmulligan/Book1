@@ -6,4 +6,7 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         super().end_headers()
 
+    def log_message(self, format, *args):
+        print(f"{self.address_string()} - - [{self.log_date_time_string()}] {format%args}")
+
 TCPServer(('', 8000), CORSRequestHandler).serve_forever() 

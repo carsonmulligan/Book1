@@ -135,7 +135,7 @@
             }
 
             async loadChapter(chapterNumber) {
-                const response = await fetch(`./chapter${chapterNumber}.md`);
+                const response = await fetch(`./chapter${chapterNumber}.md?t=${Date.now()}`);
                 if (response.ok) {
                     const chapterHTML = await response.text();
                     this.renderChapter(chapterHTML, chapterNumber);
