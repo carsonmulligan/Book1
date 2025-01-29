@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>塵土與星斗 - Dynamic Reader</title>
+    <style>
+        :root {
+            --wenyanwen-color: #2d2d2d;
+            --english-color: #444444;
+            --commentary-bg: #f8f6f3;
+            --base-font-size: 16px;
+        }
+
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            line-height: 1.8;
+            font-family: 'PingFang SC', system-ui;
+            font-size: var(--base-font-size);
+        }
+
+        .chapter-title {
+            border-bottom: 2px solid #e0dcd5;
+            padding-bottom: 1rem;
+            margin: 3rem 0 2rem;
+        }
+
+        .wenyanwen {
+            font-family: 'Kaiti SC', 'Ma Shan Zheng', serif;
+            font-size: 1.2em;
+            color: var(--wenyanwen-color);
+            margin: 1.5em 0;
+        }
+
+        .english {
+            font-family: Georgia, serif;
+            color: var(--english-color);
+            margin: 1em 0 2em;
+        }
+
+        .poem-block {
+            background: linear-gradient(to right, #fff5e6 0%, #fff 100%);
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin: 2rem 0;
+        }
+
+        .commentary {
+            background-color: var(--commentary-bg);
+            padding: 1.5rem;
+            border-left: 4px solid #d4c8b5;
+            margin: 2.5rem 0;
+        }
+
+        .text-block {
+            margin: 2.5rem 0;
+        }
+
+        .loading {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin: 2rem 0;
+        }
+
+        .error-warning {
+            color: #cc0000;
+            border: 1px solid #ffcccc;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 600px) {
+            :root {
+                --base-font-size: 14px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="book-content"></div>
+    <div class="loading" id="loading">載入中... Loading...</div>
+
+    <script>
+        class BookLoader {
+            constructor() {
+                this.contentDiv = document.getElementById('book-content');
+                this.loadingIndicator = document.getElementById('loading');
+                this.currentChapter = 1;
+                this.errorState = false;
+            }
+
+            async init() {
+                try {
+                    await this.loadChapters();
+                } catch (error) {
+                    this.showError(`致命错误: ${error.message}`);
+                } finally {
+                    this.loadingIndicator.style.display = 'none';
+                }
+            }
+
+            async loadChapters() {
+                while (!this.errorState) {
+                    const success = await this.loadChapter(this.currentChapter);
+                    if (!success) break;
+                    this.currentChapter++;
+                }
+            }
+
+            async loadChapter(number) {
+                try {
+                    const response = await fetch(`chapter${number}.md?t=${Date.now()}`);
+                    
+                    if (!response.ok) {
+                        if (number === 1) throw new Error('找不到第一章');
+                        return false;
+                    }
+
+                    const mdText = await response.text();
+                    this.renderChapter(mdText);
+                    return true;
+
+                } catch (error) {
+                    console.error(`章节加载错误 ${number}:`, error);
+                    if (number === 1) this.showError('无法加载内容');
+                    return false;
+                }
+            }
+
+            renderChapter(mdText) {
+                try {
+                    const parser = new ChapterParser(mdText);
+                    this.contentDiv.appendChild(parser.parse());
+                } catch (error) {
+                    console.error('解析错误:', error);
+                    this.showRawContent(mdText);
+                }
+            }
+
+            showError(message) {
+                this.errorState = true;
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-warning';
+                errorDiv.textContent = `⚠ ${message}`;
+                this.contentDiv.appendChild(errorDiv);
+            }
+
+            showRawContent(content) {
+                const rawDiv = document.createElement('div');
+                rawDiv.className = 'error-warning';
+                rawDiv.innerHTML = `<h3>格式错误</h3><pre>${content}</pre>`;
+                this.contentDiv.appendChild(rawDiv);
+            }
+        }
+
+        class ChapterParser {
+            constructor(mdText) {
+                this.mdText = mdText;
+                this.fragment = document.createDocumentFragment();
+            }
+
+            parse() {
+                this.addTitle();
+                this.processSections();
+                return this.fragment;
+            }
+
+            addTitle() {
+                const titleMatch = this.mdText.match(/# (.*?)\n## (.*?)\n/);
+                if (!titleMatch) throw new Error('标题格式错误');
+                
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'chapter-title';
+                titleDiv.innerHTML = `
+                    <h1 class="wenyanwen">${titleMatch[1]}</h1>
+                    <h2 class="english">${titleMatch[2]}</h2>
+                `;
+                this.fragment.appendChild(titleDiv);
+            }
+
+            processSections() {
+                const sections = this.mdText.split('\n---\n').slice(1);
+                sections.forEach(section => {
+                    const sectionDiv = document.createElement('div');
+                    
+                    if (section.includes('〖王梵志詩〗')) {
+                        sectionDiv.innerHTML = this.parsePoem(section);
+                    } else if (section.includes('〖今評')) {
+                        sectionDiv.innerHTML = this.parseCommentary(section);
+                    } else {
+                        sectionDiv.innerHTML = this.parseText(section);
+                    }
+
+                    this.fragment.appendChild(sectionDiv);
+                });
+            }
+
+            parsePoem(section) {
+                const [chinese, english] = section.split('**English**');
+                return `
+                    <div class="poem-block">
+                        <div class="wenyanwen">${this.cleanText(chinese)}</div>
+                        <div class="english">${this.cleanText(english)}</div>
+                    </div>
+                `;
+            }
+
+            parseCommentary(section) {
+                const [chinese, english] = section.split('**English Commentary**');
+                return `
+                    <div class="commentary">
+                        <div class="wenyanwen">${this.cleanText(chinese)}</div>
+                        <div class="english">${this.cleanText(english)}</div>
+                    </div>
+                `;
+            }
+
+            parseText(section) {
+                const [chinese, english] = section.split('**English**');
+                return `
+                    <div class="text-block">
+                        <div class="wenyanwen">${this.cleanText(chinese)}</div>
+                        <div class="english">${this.cleanText(english)}</div>
+                    </div>
+                `;
+            }
+
+            cleanText(text) {
+                return text
+                    .replace(/(\*\*|〖|〗)/g, '')
+                    .replace(/\n{2,}/g, '</p><p>')
+                    .replace(/\n/g, '<br>')
+                    .trim();
+            }
+        }
+
+        // Initialize when ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const book = new BookLoader();
+            book.init();
+        });
+    </script>
+</body>
+</html> 
