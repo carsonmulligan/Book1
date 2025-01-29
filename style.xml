@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<style>
+  <bilingual-layout>
+    <wenyanwen font="Kaiti SC" size="14pt" color="#2d2d2d"/>
+    <english font="Georgia" size="12pt" color="#444444"/>
+    <spacing>1.6em</spacing>
+  </bilingual-layout>
+  <commentary-style>
+    <modern-chinese font="PingFang SC" size="13pt"/>
+    <english-commentary font="Arial" size="12pt"/>
+  </commentary-style>
+</style> 
