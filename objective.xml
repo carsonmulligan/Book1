@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book-conversion-objective>
+    <core-requirements>
+        <requirement priority="1">
+            <description>Replicate visual style from book.html exactly</description>
+            <source>book.html</source>
+            <target>book_markdown_to_html.html</target>
+            <style-elements>
+                <color-scheme base="#2d2d2d" secondary="#444444"/>
+                <font-stack chinese="Kaiti SC, Ma Shan Zheng" english="Georgia"/>
+                <spacing line-height="1.8" paragraph-margin="2.5rem"/>
+            </style-elements>
+        </requirement>
+        
+        <requirement priority="1">
+            <description>Dynamic chapter loading system</description>
+            <technical-spec>
+                <loading-mechanism>Sequential fetch() calls</loading-mechanism>
+                <chapter-pattern>chapter{number}.md</chapter-pattern>
+                <error-handling>
+                    <console-logging>true</console-logging>
+                    <user-notification>Loading indicator</user-notification>
+                </error-handling>
+            </technical-spec>
+        </requirement>
+        
+        <requirement priority="2">
+            <description>Markdown parsing rules</description>
+            <parsing-rules>
+                <section-type id="poem">
+                    <identifier>〖王梵志詩〗</identifier>
+                    <structure>
+                        <chinese-block>**Original:**</chinese-block>
+                        <english-block>**English**</english-block>
+                    </structure>
+                </section-type>
+                <section-type id="commentary">
+                    <identifier>〖今評</identifier>
+                    <structure>
+                        <chinese-block>〖今評 Commentary〗</chinese-block>
+                        <english-block>**English Commentary**</english-block>
+                    </structure>
+                </section-type>
+            </parsing-rules>
+        </requirement>
+    </core-requirements>
+
+    <dependencies>
+        <file-structure>
+            <essential>
+                <file path="book_markdown_to_html.html" type="main"/>
+                <file path="chapter*.md" type="content" min="3"/>
+                <file path="style.xml" type="reference"/>
+            </essential>
+            <optional>
+                <directory path="assets/fonts/" purpose="custom fonts"/>
+            </optional>
+        </file-structure>
+    </dependencies>
+
+    <fallback-strategies>
+        <strategy type="1">
+            <condition>Missing chapter file</condition>
+            <action>Console error + halt loading</action>
+        </strategy>
+        <strategy type="2">
+            <condition>Markdown format error</condition>
+            <action>Display raw markdown with warning</action>
+        </strategy>
+        <strategy type="3">
+            <condition>Style loading failure</condition>
+            <action>Use system default fonts + base colors</action>
+        </strategy>
+    </fallback-strategies>
+
+    <validation-metrics>
+        <metric>1:1 style match with book.html</metric>
+        <metric>Chapter load time &lt; 500ms per chapter</metric>
+        <metric>Zero unhandled JavaScript exceptions</metric>
+    </validation-metrics>
+</book-conversion-objective> 
