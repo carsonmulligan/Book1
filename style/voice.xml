@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<literary_voice name="DaoistWeave">
+  <structure>
+    <chapter_template>
+      <title dual_language="true"/>
+      <wang_poem mandatory="true">
+        <original lang="zh-Hant"/>
+        <translation poetic_license="permitted"/>
+      </wang_poem>
+      <sections min="3">
+        <text dual_language="true">
+          <zh-Hant poetic_density="high"/>
+          <en maintain_poetic_structures="true"/>
+        </text>
+      </sections>
+      <commentary dual_language="true" philosophical_focus="required"/>
+    </chapter_template>
+  </structure>
+
+  <style_elements>
+    <metaphor>
+      <natural_phenomena transformation="required">
+        <example>hoe blade → Bagua mirror</example>
+        <example>cicada husk → clay flute</example>
+      </natural_phenomena>
+      <cosmic_in_mundane priority="high">
+        <rule>microcosm must reflect macrocosm</rule>
+      </cosmic_in_mundane>
+    </metaphor>
+
+    <paradox type="zhuangzi">
+      <identity_fluidity>
+        <example>farmer ↔ egret</example>
+      </identity_fluidity>
+      <temporal_collapse>
+        <example>mother's icicle → Yangtze tributary</example>
+      </temporal_collapse>
+    </paradox>
+
+    <cultural_hybridity>
+      <east_west_synthesis>
+        <element>Baji quan + cowboy boots</element>
+      </east_west_synthesis>
+      <historical_layering>
+        <requirement>minimum 2 eras per chapter</requirement>
+      </historical_layering>
+    </cultural_hybridity>
+
+    <humor type="rustic_zen">
+      <absurd_transformations>
+        <example>field mice reading radish love letters</example>
+      </absurd_transformations>
+    </humor>
+  </style_elements>
+
+  <themes>
+    <micro_macro_cosm>
+      <implementation>
+        <natural_objects>
+          <item priority="1">agricultural tools</item>
+          <item priority="2">insects/animals</item>
+          <item priority="3">weather phenomena</item>
+        </natural_objects>
+      </implementation>
+    </micro_macro_cosm>
+
+    <transformation_rules>
+      <object_transformation>
+        <rule>Must undergo 3 states: literal → metaphorical → cosmic</rule>
+      </object_transformation>
+      <identity_shift>
+        <requirement>Character should experience fluid identity per chapter</requirement>
+      </identity_shift>
+    </transformation_rules>
+
+    <temporal_handling>
+      <cyclical_time mandatory="true"/>
+      <historical_echoes>
+        <requirement>Include 1 Tang reference per chapter</requirement>
+      </historical_echoes>
+    </temporal_handling>
+  </themes>
+
+  <restrictions>
+    <explicit_religion forbidden="true"/>
+    <abstract_concepts max_per_chapter="2"/>
+    <modern_technology allowed="pre-1940 only"/>
+  </restrictions>
+
+  <guidelines>
+    <rule>Show Dao through farming rituals, not lectures</rule>
+    <rule>Use Wang Fanzhi's poetry as thematic anchors</rule>
+    <rule>Maintain 40:60 ratio of humor to philosophical weight</rule>
+    <rule>Implement Zhuangzi's paradox through natural transformations</rule>
+  </guidelines>
+</literary_voice> 
