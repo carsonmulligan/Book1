@@ -32,6 +32,8 @@
 
         .wenyanwen {
             font-family: 'Kaiti SC', 'Ma Shan Zheng', serif;
+
+            /* font-family: 'Ma Shan Zheng', 'Noto Serif SC', serif; */
             font-size: 1.4em;
             color: var(--wenyanwen-color);
             margin: var(--vertical-spacing) 0;
@@ -98,6 +100,20 @@
             .vertical-container {
                 padding: 1rem 0.5rem;
                 margin-left: 1rem;
+            }
+        }
+
+        @media print {
+            body { 
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            .vertical-container {
+                height: auto !important;
+                page-break-inside: avoid;
+            }
+            .english {
+                page-break-before: avoid;
             }
         }
     </style>
