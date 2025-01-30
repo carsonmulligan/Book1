@@ -10,6 +10,7 @@
             --english-color: #444444;
             --commentary-bg: #f8f6f3;
             --base-font-size: 16px;
+            --vertical-spacing: 2.5rem;
         }
 
         body {
@@ -22,16 +23,21 @@
         }
 
         .chapter-title {
-            border-bottom: 2px solid #e0dcd5;
-            padding-bottom: 1rem;
-            margin: 3rem 0 2rem;
+            border-bottom: none;
+            border-left: 2px solid #e0dcd5;
+            padding: 0 0 0 2rem;
+            margin: 3rem 0;
+            writing-mode: vertical-rl;
         }
 
         .wenyanwen {
             font-family: 'Kaiti SC', 'Ma Shan Zheng', serif;
-            font-size: 1.2em;
+            font-size: 1.4em;
             color: var(--wenyanwen-color);
-            margin: 1.5em 0;
+            margin: var(--vertical-spacing) 0;
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+            line-height: 2.2;
         }
 
         .english {
@@ -41,17 +47,17 @@
         }
 
         .poem-block {
-            background: linear-gradient(to right, #fff5e6 0%, #fff 100%);
-            padding: 1.5rem;
-            border-radius: 4px;
-            margin: 2rem 0;
+            background: linear-gradient(to bottom, #fff5e6 0%, #fff 100%);
+            padding: 1.5rem 3rem;
+            margin: 2rem 1rem;
         }
 
         .commentary {
             background-color: var(--commentary-bg);
             padding: 1.5rem;
             border-left: 4px solid #d4c8b5;
-            margin: 2.5rem 0;
+            border-right: none;
+            margin: 2.5rem 1rem;
         }
 
         .text-block {
@@ -72,9 +78,26 @@
             margin: 1rem 0;
         }
 
+        .vertical-container {
+            writing-mode: vertical-rl;
+            text-combine-upright: none;
+            height: 100vh;
+            padding: 2rem 1rem;
+            margin-left: 2rem;
+        }
+
         @media (max-width: 600px) {
             :root {
                 --base-font-size: 14px;
+            }
+            .wenyanwen {
+                font-size: 1.1em;
+                line-height: 1.8;
+            }
+            
+            .vertical-container {
+                padding: 1rem 0.5rem;
+                margin-left: 1rem;
             }
         }
     </style>
@@ -203,7 +226,9 @@
                 const [chinese, english] = section.split('**English**');
                 return `
                     <div class="poem-block">
-                        <div class="wenyanwen">${this.cleanText(chinese)}</div>
+                        <div class="vertical-container">
+                            <div class="wenyanwen">${this.cleanText(chinese)}</div>
+                        </div>
                         <div class="english">${this.cleanText(english)}</div>
                     </div>
                 `;
@@ -213,7 +238,9 @@
                 const [chinese, english] = section.split('**English Commentary**');
                 return `
                     <div class="commentary">
-                        <div class="wenyanwen">${this.cleanText(chinese)}</div>
+                        <div class="vertical-container">
+                            <div class="wenyanwen">${this.cleanText(chinese)}</div>
+                        </div>
                         <div class="english">${this.cleanText(english)}</div>
                     </div>
                 `;
@@ -223,7 +250,9 @@
                 const [chinese, english] = section.split('**English**');
                 return `
                     <div class="text-block">
-                        <div class="wenyanwen">${this.cleanText(chinese)}</div>
+                        <div class="vertical-container">
+                            <div class="wenyanwen">${this.cleanText(chinese)}</div>
+                        </div>
                         <div class="english">${this.cleanText(english)}</div>
                     </div>
                 `;

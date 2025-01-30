@@ -1,0 +1,19 @@
+<modification-plan>
+    <step>
+        <file>book_markdown_to_html.html</file>
+        <changes>
+            <style-add>
+                Add vertical writing styles to the CSS:
+                - Create vertical-rl writing mode for Chinese text
+                - Adjust layout for vertical text flow
+                - Add text-orientation rules
+            </style-add>
+            <class-modify>
+                Update wenyanwen class to handle vertical layout
+            </class-modify>
+            <structure-adjust>
+                Modify text containers to support vertical flow
+            </structure-adjust>
+        </changes>
+    </step>
+</modification-plan> 
