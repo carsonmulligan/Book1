@@ -6,77 +6,81 @@
     <title>The Dust and Blue Cotton - Reader</title>
     <style>
         :root {
-            --paper: #f5f1e3;
-            --ink: #2b2720;
-            --accent: #6b9080;
+            --parchment: #f9f6ef;
+            --iron-gall: #2a2721;
+            --verdigris: #4a7669;
+            --cinnabar: #b34335;
         }
 
         body {
-            font-family: 'Georgia', serif;
-            line-height: 1.8;
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            color: var(--ink);
-            background: var(--paper);
+            font-family: 'Crimson Text', serif;
+            line-height: 1.6;
+            max-width: 720px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            color: var(--iron-gall);
+            background: var(--parchment);
+            font-size: 1.1rem;
         }
 
         .chapter-title {
-            font-family: 'Palatino', serif;
-            font-size: 2.5rem;
-            color: var(--accent);
-            border-bottom: 3px double var(--accent);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.8rem;
+            color: var(--verdigris);
+            border-bottom: 1px solid var(--cinnabar);
             text-align: center;
-            margin: 3rem 0;
+            margin: 4rem 0 3rem;
+            font-weight: 300;
+            letter-spacing: -0.5px;
         }
 
         .verse {
-            font-style: italic;
-            text-align: center;
-            margin: 2rem 0;
-            padding: 1.5rem;
-            background: rgba(107, 144, 128, 0.1);
-            border-radius: 4px;
+            font-family: 'EB Garamond', serif;
+            margin: 3rem auto;
+            padding: 2rem 0;
+            width: 80%;
+            border-left: 3px solid var(--verdigris);
+            font-size: 1.05rem;
+            color: var(--iron-gall);
         }
 
         .text-section {
-            margin: 3rem 0;
+            margin: 2.5rem 0;
             text-align: justify;
             hyphens: auto;
+            text-indent: 1.5em;
         }
 
         .text-section:first-letter {
-            initial-letter: 2;
-            color: var(--accent);
-            font-weight: bold;
-            margin-right: 0.2em;
+            initial-letter: 3;
+            color: var(--cinnabar);
+            font-family: 'Cormorant', serif;
+            margin-right: 0.25em;
+            text-indent: 0;
         }
 
         .commentary {
-            margin: 4rem 0;
-            padding: 2rem;
-            background: rgba(107, 144, 128, 0.05);
-            border-left: 4px solid var(--accent);
-            font-size: 0.9em;
+            margin: 4rem -2rem;
+            padding: 2.5rem;
+            background: rgba(74, 118, 105, 0.08);
+            border: 1px solid rgba(74, 118, 105, 0.15);
+            font-size: 0.95rem;
+            font-family: 'Charter', serif;
         }
 
         .hanzi {
-            font-family: 'SimSun', serif;
-            font-size: 1.2em;
-            margin: 0 0.2em;
-        }
-
-        a {
-            color: var(--accent);
-            text-decoration: none;
-            border-bottom: 1px dotted var(--accent);
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.3em;
+            color: var(--verdigris);
+            vertical-align: middle;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --paper: #1a1a1a;
-                --ink: #e0d6c2;
-                --accent: #8ab17d;
+                --parchment: #1e1c18;
+                --iron-gall: #d4ccc3;
+                --verdigris: #7ba697;
+                --cinnabar: #d17a6b;
             }
         }
     </style>
